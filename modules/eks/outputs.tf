@@ -19,4 +19,11 @@ output "cluster_oidc_issuer_url" {
   value       = aws_eks_cluster.sindhbank.identity[0].oidc[0].issuer
 }
 
+output "cluster_sg_id" {
+  value = aws_security_group.eks_cluster_sg.id
+}
+
+output "nodes_sg_id" {
+  value = aws_security_group.eks_node_sg.id
+}
 

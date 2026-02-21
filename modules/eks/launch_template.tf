@@ -4,7 +4,7 @@ data "aws_ami" "eks_worker" {
 
   filter {
     name   = "name"
-    values = ["amazon-eks-node-1.28-v*"]
+    values = ["amazon-eks-node-1.30-v*"]
   }
 }
 
@@ -12,6 +12,10 @@ resource "aws_launch_template" "eks_nodes" {
   name_prefix   = "${var.project}-${var.environment}-eks-"
   image_id      = data.aws_ami.eks_worker.id
   instance_type = "t3.micro"
+
+  vpc_security_group_ids = [aws_security_group.eks_node_sg.id]
+
+  update_default_version = true
 
   tag_specifications {
     resource_type = "instance"
