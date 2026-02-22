@@ -24,6 +24,7 @@ resource "aws_launch_template" "eks_nodes_lt" {
 
   key_name = null  # no SSH for private nodes
 
+
   network_interfaces {
     security_groups = [aws_security_group.eks_nodes_sg.id]
   }
@@ -35,7 +36,14 @@ resource "aws_launch_template" "eks_nodes_lt" {
       volume_type = "gp3"
     }
   }
-
+    # 🔑 Bootstrap script to join the cluster
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    /etc/eks/bootstrap.sh ${var.project}-${var.environment}-eks \
+      --kubelet-extra-args '--node-labels=role=private'
+  EOF
+  )
+  
   tag_specifications {
     resource_type = "instance"
     tags = {
