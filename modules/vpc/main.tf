@@ -34,7 +34,12 @@ resource "aws_subnet" "private" {
   cidr_block        = var.private_subnet_cidrs[count.index]
   availability_zone = data.aws_availability_zones.available.names[count.index]
   map_public_ip_on_launch = false
-  tags = merge(local.common_tags, { Name = "${local.name_prefix}-private-${count.index + 1}" })
+  tags = merge(local.common_tags, { Name = "${local.name_prefix}-private-${count.index + 1}" 
+  
+   # Required for EKS
+   "kubernetes.io/cluster/${var.project}-${var.environment}-eks" = "shared"
+   "kubernetes.io/role/internal-elb" = "1"
+  })
 }
 
 # Internet Gateway
