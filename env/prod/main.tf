@@ -23,7 +23,6 @@ module "iam" {
   source      = "../../modules/iam"
   project     = var.project
   environment = var.environment
-  oidc_provider_url = module.eks.cluster_oidc_issuer_url
 
   tags = {
     Owner = "SindhBank-InfraTeam"
@@ -61,12 +60,9 @@ module "eks" {
   project          = var.project
   environment      = var.environment
 
-  private_subnet_ids = module.vpc.private_subnet_ids
-  
-  vpc_id           = module.vpc.vpc_id
-  cluster_role_arn = module.iam.eks_cluster_role_arn
-  node_role_arn    = module.iam.eks_nodegroup_role_arn
-  tags = {
-    Owner = "SindhBank-InfraTeam"
-  }
+  vpc_id              = module.vpc.vpc_id
+  private_subnet_ids  = module.vpc.private_subnet_ids
+  vpc_cidr           = module.vpc.vpc_cidr 
+  cluster_role_arn    = module.iam.cluster_role_arn
+  node_role_arn       = module.iam.node_role_arn
 }

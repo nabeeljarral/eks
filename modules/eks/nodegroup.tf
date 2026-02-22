@@ -1,23 +1,33 @@
 resource "aws_eks_node_group" "private_nodes" {
-  cluster_name    = aws_eks_cluster.sindhbank.name
-  node_group_name = "${var.project}-${var.environment}-private-ng"
+  cluster_name    = aws_eks_cluster.eks.name
+  node_group_name = "private-node-group"
   node_role_arn   = var.node_role_arn
   subnet_ids      = var.private_subnet_ids
 
   scaling_config {
     desired_size = 2
-    max_size     = 3
-    min_size     = 1
+    max_size     = 4
+    min_size     = 2
   }
 
-  launch_template {
-    id      = aws_launch_template.eks_nodes.id
-    version = "$Latest"
+  instance_types = ["t3.medium"]
+
+  remote_access {
+    ec2_ssh_key = null   # private nodes, no SSH
   }
 
   tags = {
+    Name        = "private-nodes"
     Project     = var.project
     Environment = var.environment
-    Module      = "eks-nodegroup"
   }
+
+  depends_on = [
+    aws_eks_cluster.eks
+  ]
+
+    labels = {
+    Name = "${var.project}-${var.environment}-node"
+  }
+
 }
