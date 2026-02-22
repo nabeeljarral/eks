@@ -10,7 +10,7 @@ variable "cluster_role_arn" {}
 variable "node_role_arn" {}
 
 variable "kubernetes_version" {
-  default = "1.33"
+  default = "1.31"
 }
 
 variable "vpc_cidr" {}
